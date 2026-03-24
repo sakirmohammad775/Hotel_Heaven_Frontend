@@ -1,7 +1,6 @@
-import { Route, Routes } from "react-router";
-import App from "../App";
+import { Route, Routes } from "react-router-dom";
 import Home from "../pages/Home";
-import HotelDetails from "../components/Hotel/SpecificHotelPage";
+import SpecificHotelDetails from "../components/Hotel/SpecificHotelPage";
 
 
 
@@ -9,7 +8,7 @@ const AppRoutes = () => {
     return (
     <Routes>
          <Route path="/" element={<Home></Home>}></Route>
-         <Route path="/hotels/:id" element={<HotelDetails />} />
+         <Route path="/hotels/:id" element={<SpecificHotelDetails />} />
     </Routes>
     );
 };

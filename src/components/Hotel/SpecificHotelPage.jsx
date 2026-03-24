@@ -2,7 +2,7 @@ import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import apiClient from "../../services/Api-Client";
 
-const HotelDetails = () => {
+const SpecificHotelDetails = () => {
   const { id } = useParams();
   const [hotel, setHotel] = useState(null);
 
@@ -42,4 +42,4 @@ const HotelDetails = () => {
   );
 };
 
-export default HotelDetails;
+export default SpecificHotelDetails;
