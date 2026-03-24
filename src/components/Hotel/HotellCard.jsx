@@ -1,4 +1,4 @@
-import React from 'react';
+
 import { useNavigate } from 'react-router-dom';
 
 const HotelCard = ({ hotel }) => {
@@ -6,7 +6,7 @@ const HotelCard = ({ hotel }) => {
 
   return (
     <div 
-      onClick={() => navigate(`/hotels/${hotel.id}`)} // ✅ FIXED
+      onClick={() => navigate(`/hotels/${hotel.id}`)}
       className="relative w-full h-[500px] md:h-[600px] overflow-hidden group cursor-pointer rounded-sm"
     >
       {/* Background Image */}
