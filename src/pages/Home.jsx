@@ -1,24 +1,14 @@
-import HotelHero from "../components/Home/HotelHero";
-import Hero from "../components/Home/Hero";
-import ServicesSection from "../components/Home/ServicesSection";
 
-import Gastronomy from "../components/Home/Gastronomy";
-import Carousel from "../components/Home/Carousel";
-import NearbyPlaces from "../components/Home/NearbyPlaces";
-import DivingSection from "../components/Home/DivingSection";
+import Carousel from "../components/Home/Carousel"
 import HotelList from "../components/Hotel/HotelList";
 
 
 const Home = () => {
   return (
     <>
-      <Hero></Hero>
       <HotelList></HotelList>
-      <HotelHero></HotelHero>
       <Carousel></Carousel>
-      <Gastronomy></Gastronomy>
-      <NearbyPlaces></NearbyPlaces>
-      <DivingSection></DivingSection>
+      
       {/* Global Scroll-to-Top Indicator */}
       <div className="flex justify-center py-12 bg-white">
         <div className="w-[1px] h-20 bg-stone-200"></div>
