@@ -5,11 +5,13 @@ import HotelHero from "../components/Home/HotelHero";
 import NearbyPlaces from "../components/Home/NearbyPlaces";
 import ServicesSection from "../components/Home/ServicesSection";
 import HotelList from "../components/Hotel/HotelList";
+import Navbar from "../layout/Navbar";
 
 
 const Home = () => {
   return (
     <>
+      <Navbar></Navbar>
       <HotelHero></HotelHero>
       <Carousel></Carousel>
       <HotelList></HotelList>
