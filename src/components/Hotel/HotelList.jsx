@@ -8,7 +8,8 @@ import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 
 import apiClient from '../../services/Api-Client';
-import HotelCard from './HotellCard';
+import HotelCard from './HotelCard';
+
 
 const HotelList = () => {
   const [hotels, setHotels] = useState([]);
