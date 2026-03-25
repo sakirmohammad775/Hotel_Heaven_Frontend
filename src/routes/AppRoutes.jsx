@@ -8,7 +8,9 @@ import ActivateAccount from "../components/Registration/ActivateAccount";
 import Dashboard from "../pages/Dashboard";
 import PrivateRoute from "../components/PrivateRoute";
 import DashboardLayout from "../layout/DashboardLayout";
+import BookingCheckout from "../components/Booking/BookingCheckout";
 import Profile from "../pages/Profile";
+import Cart from "../components/Booking/Cart";
 
 const AppRoutes = () => {
   return (
@@ -20,6 +22,7 @@ const AppRoutes = () => {
         <Route path="/register" element={<Register></Register>}></Route>
         <Route path="/activate/:uid/:token" element={<ActivateAccount />} />
         
+        <Route path="/checkout" element={<BookingCheckout />} />
         <Route
           path="/dashboard"
           element={
@@ -30,6 +33,7 @@ const AppRoutes = () => {
         >
           <Route index element={<Dashboard></Dashboard>}></Route>
           <Route path="profile" element={<Profile />} />
+          <Route path="cart" element={<Cart />} />
           
       
         </Route>

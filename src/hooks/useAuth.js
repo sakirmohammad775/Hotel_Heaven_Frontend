@@ -55,7 +55,7 @@ const useAuth = () => {
     }
   };
 
-  // ✅ Register
+  //  Register
   const registerUser = async (userData) => {
     try {
       await authApiClient.post("/auth/users/", userData);
@@ -65,6 +65,46 @@ const useAuth = () => {
       };
     } catch (error) {
       return handleAPIError(error, "Registration failed");
+    }
+  };
+  //  Update Profile (PATCH /auth/users/me/)
+  const updateUserProfile = async (payload) => {
+    setErrorMsg("");
+    try {
+      const response = await authApiClient.patch("/auth/users/me/", payload);
+      setUser((prev) => ({ ...prev, ...response.data })); // ← update user state immediately
+      return { success: true };
+    } catch (error) {
+      return handleAPIError(error, "Profile update failed");
+    }
+  };
+
+  // Change Password (POST /auth/users/set_password/)
+  // const changePassword = async ({ current_password, new_password }) => {
+  //   setErrorMsg("");
+  //   try {
+  //     await authApiClient.post("/auth/users/set_password/", {
+  //       current_password,
+  //       new_password,
+  //       re_new_password: new_password,
+  //     });
+  //     return { success: true };
+  //   } catch (error) {
+  //     return handleAPIError(error, "Password change failed");
+  //   }
+  // };
+  const changePassword = async ({ current_password, new_password }) => {
+    setErrorMsg("");
+    try {
+      await authApiClient.post("/auth/users/set_password/", {
+        current_password,
+        new_password,
+        re_new_password: new_password,
+      });
+      return { success: true };
+    } catch (error) {
+      console.log("PASSWORD ERROR:", error.response?.data); // ← add this
+      return handleAPIError(error, "Password change failed");
     }
   };
 
@@ -81,6 +121,8 @@ const useAuth = () => {
     loginUser,
     registerUser,
     logoutUser,
+    updateUserProfile,
+    changePassword,
   };
 };
 

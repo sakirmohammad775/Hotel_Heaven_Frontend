@@ -40,7 +40,7 @@ const Sidebar = () => {
 
   const customerMenus = [
     { to: "/dashboard", icon: <LayoutDashboard size={18} />, label: "My Dashboard" },
-    { to: "/dashboard/bookings", icon: <ShoppingBag size={18} />, label: "My Bookings" },
+    { to: "/dashboard/cart", icon: <ShoppingBag size={18} />, label: "My Bookings" },
     { to: "/dashboard/profile", icon: <User size={18} />, label: "Profile Settings" },
     { to: "/dashboard/support", icon: <Info size={18} />, label: "Help Center" },
     { to: "/checkout", icon: <Info size={18} />, label: "checkout" },

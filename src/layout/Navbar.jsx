@@ -94,7 +94,7 @@ const Navbar = () => {
                         <span className="text-lg font-bold">{cart?.items?.length || 0} Items</span>
                         <span className="text-blue-600 font-medium">Subtotal: ${cart?.total_price || 0}</span>
                         <div className="card-actions">
-                          <Link to="/dashboard/bookings" className="w-full">
+                          <Link to="/dashboard/cart" className="w-full">
                             <button className="btn bg-[#1e2d35] hover:bg-[#b1a494] text-white btn-block border-none">View Bookings</button>
                           </Link>
                         </div>

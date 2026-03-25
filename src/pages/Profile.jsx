@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import useAuthContext from "../hooks/useAuthContext";
-import { useForm } from "react-hook-form"; 
+import { useForm } from "react-hook-form";
 import ErrorAlert from "../components/ErrorAlert";
 import ProfileForm from "../components/Dashboard/Profile/ProfileForm";
 import PasswordChangeForm from "../components/Dashboard/Profile/PasswordChangeForm";
@@ -24,28 +24,31 @@ const Profile = () => {
   }, [user, setValue]);
 
   const onSubmit = async (data) => {
-    console.log(data);
-    try {
-      // Profile update
-      const profilePayload = {
-        first_name: data.first_name,
-        last_name: data.last_name,
-        address: data.address,
-        phone_number: data.phone_number,
-      };
+  try {
+    const profilePayload = {
+      first_name: data.first_name,
+      last_name: data.last_name,
+      address: data.address,
+      phone_number: data.phone_number,
+    };
 
-      await updateUserProfile(profilePayload);
-      // Password Change
-      if (data.current_password && data.new_password) {
-        await changePassword({
-          current_password: data.current_password,
-          new_password: data.new_password,
-        });
-      }
-    } catch (error) {
-      console.log(error);
+    const profileResult = await updateUserProfile(profilePayload);
+    if (!profileResult.success) return;
+
+    if (data.current_password && data.new_password) {
+      const passwordResult = await changePassword({
+        current_password: data.current_password,
+        new_password: data.new_password,
+      });
+      if (!passwordResult.success) return;
     }
-  };
+
+    setIsEditing(false);
+
+  } catch (error) {
+    console.log("Submit error:", error);
+  }
+};
 
   return (
     <div className="card w-full max-w-2xl mx-auto bg-base-100 shadow-xl">
