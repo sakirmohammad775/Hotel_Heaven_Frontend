@@ -6,7 +6,7 @@ import NearbyPlaces from "../components/Home/NearbyPlaces";
 import ServicesSection from "../components/Home/ServicesSection";
 import HotelList from "../components/Hotel/HotelList";
 import Navbar from "../layout/Navbar";
-
+import DivingSection from "../components/Home/DivingSection"
 
 const Home = () => {
   return (
@@ -16,6 +16,7 @@ const Home = () => {
       <Carousel></Carousel>
       <HotelList></HotelList>
       <Gastronomy></Gastronomy>
+      <DivingSection></DivingSection>
       <ServicesSection></ServicesSection>
       <NearbyPlaces></NearbyPlaces>
     
