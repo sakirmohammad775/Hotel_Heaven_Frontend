@@ -11,6 +11,9 @@ import DashboardLayout from "../layout/DashboardLayout";
 import BookingCheckout from "../components/Booking/BookingCheckout";
 import Profile from "../pages/Profile";
 import Cart from "../components/Booking/Cart";
+import PaymentSuccess from "../pages/PaymentSuccess";
+import PaymentFailed from "../pages/PaymentFailed";
+import Bookings from "../components/Booking/Bookings";
 
 const AppRoutes = () => {
   return (
@@ -21,8 +24,14 @@ const AppRoutes = () => {
         <Route path="/login" element={<Login></Login>}></Route>
         <Route path="/register" element={<Register></Register>}></Route>
         <Route path="/activate/:uid/:token" element={<ActivateAccount />} />
-        
         <Route path="/checkout" element={<BookingCheckout />} />
+        <Route path="/cart" element={<Cart></Cart>} />
+
+        {/* Payment result pages */}
+        <Route path="/payment/success" element={<PaymentSuccess />} />
+        <Route path="/payment/failed" element={<PaymentFailed />} />
+        <Route path="/payment/cancelled" element={<PaymentFailed />} />
+
         <Route
           path="/dashboard"
           element={
@@ -33,13 +42,10 @@ const AppRoutes = () => {
         >
           <Route index element={<Dashboard></Dashboard>}></Route>
           <Route path="profile" element={<Profile />} />
-          <Route path="cart" element={<Cart />} />
-          
-      
+          <Route path="bookings" element={<Bookings />} />
+          <Route path="cart" element={<Cart></Cart>}/>
         </Route>
       </Route>
-      
-      
     </Routes>
   );
 };
