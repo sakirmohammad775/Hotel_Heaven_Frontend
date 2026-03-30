@@ -1,62 +1,101 @@
-import { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 const Carousel = () => {
-  const [activeRoom, setActiveRoom] = useState(6);
-  const rooms = [1, 2, 3, 4, 5, 6];
+  const [activeSlide, setActiveSlide] = useState(0);
+
+  const roomData = [
+    {
+      id: 1,
+      type: "Deluxe Room",
+      price: "249",
+      image: "https://images.unsplash.com/photo-1618773928121-c32242e63f39",
+    },
+    {
+      id: 2,
+      type: "Signature Room",
+      price: "299",
+      image: "https://images.unsplash.com/photo-1590490360182-c33d57733427",
+    },
+    {
+      id: 3,
+      type: "Luxury Suite Room",
+      price: "399",
+      image: "https://images.unsplash.com/photo-1566665797739-1674de7a421a",
+    }
+  ];
+
+  // Auto-play logic
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setActiveSlide((prev) => (prev + 1) % roomData.length);
+    }, 5000);
+    return () => clearInterval(timer);
+  }, []);
 
   return (
-    <section className="bg-[#f2f0ef] py-20 px-6 md:px-12 lg:px-24 font-serif">
-      <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-end gap-12">
-        
-        {/* Left Side: Main Heading and Description */}
-        <div className="md:w-1/2">
-          <h2 className="text-4xl md:text-5xl lg:text-6xl text-stone-800 leading-tight mb-8 uppercase font-light tracking-wide">
-            Enter our room <br />
-            where every detail inspires <br />
-            comfort and style.
-          </h2>
-          <p className="text-stone-500 font-sans text-sm md:text-base leading-relaxed max-w-lg font-light">
-            All three of Rooms Hotels locations are restorations that translate historic locations 
-            into places of contemporary comfort. Industrial architecture, salvaged building 
-            materials and the unique approach.
-          </p>
-        </div>
+    <section className="relative h-screen w-full overflow-hidden bg-stone-900">
+      {roomData.map((room, index) => (
+        <div
+          key={room.id}
+          className={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${
+            index === activeSlide ? "opacity-100" : "opacity-0"
+          }`}
+        >
+          {/* Background Image Layer */}
+          <div className="absolute inset-0">
+            <img 
+              src={room.image} 
+              className="h-full w-full object-cover brightness-[0.7]" 
+              alt={room.type} 
+            />
+            {/* Dark Gradient Overlay for text contrast */}
+            <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-transparent to-black/60"></div>
+          </div>
 
-        {/* Right Side: Room Capacity and Circular Navigation */}
-        <div className="md:w-1/2 flex flex-col items-start md:items-end">
-          <h3 className="text-stone-800 text-lg md:text-xl mb-6 font-light italic">
-            Our 6 Rooms can Comfortably Accommodate Up to 14 People
-          </h3>
-          
-          <div className="flex gap-3">
-            {rooms.map((num) => (
-              <button
-                key={num}
-                onClick={() => setActiveRoom(num)}
-                className={`w-10 h-10 md:w-12 md:h-12 rounded-full border flex items-center justify-center text-sm transition-all duration-300 ${
-                  activeRoom === num 
-                    ? 'bg-[#b1a494] border-[#b1a494] text-white' 
-                    : 'border-stone-300 text-stone-600 hover:border-stone-500'
-                }`}
-              >
-                {num < 10 ? `0${num}` : num}
-              </button>
-            ))}
+          {/* Content Layer */}
+          <div className="relative z-10 flex h-full items-center px-12 md:px-24">
+            {/* Left Side: Static Label */}
+            <div className="w-1/2">
+              <h1 className="font-serif text-5xl md:text-7xl text-white tracking-wide">
+                Our Rooms
+              </h1>
+            </div>
+
+            {/* Right Side: Dynamic Room Details */}
+            <div className="w-1/2 flex flex-col items-center text-center space-y-12">
+              {roomData.map((item, i) => (
+                <div 
+                  key={item.id}
+                  className={`transition-all duration-700 transform ${
+                    i === activeSlide 
+                    ? "scale-110 opacity-100 translate-y-0" 
+                    : "scale-90 opacity-40 translate-y-4"
+                  }`}
+                >
+                  <p className="text-[10px] uppercase tracking-[0.4em] text-stone-300 mb-2">
+                    FROM ${item.price}/NIGHT
+                  </p>
+                  <h2 className="font-serif text-2xl md:text-4xl text-white cursor-pointer hover:text-[#b1a494] transition-colors">
+                    {item.type}
+                  </h2>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
-      </div>
+      ))}
 
-      {/* Carousel Image Placeholder Area */}
-      <div className="mt-16 w-full h-[500px] bg-stone-300 relative overflow-hidden group">
-         {/* In a real app, you would map through images based on activeRoom */}
-         <div className="absolute inset-0 flex items-center justify-center text-stone-100 uppercase tracking-[0.5em]">
-            Room {activeRoom} Preview
-         </div>
-         
-         {/* Subtle Progress Line */}
-         <div className="absolute bottom-0 left-0 h-1 bg-[#b1a494] transition-all duration-500" 
-              style={{ width: `${(activeRoom / rooms.length) * 100}%` }}>
-         </div>
+      {/* Slide Indicators (Bottom Center) */}
+      <div className="absolute bottom-10 left-1/2 -translate-x-1/2 flex gap-4 z-20">
+        {roomData.map((_, i) => (
+          <button
+            key={i}
+            onClick={() => setActiveSlide(i)}
+            className={`h-[2px] transition-all duration-500 ${
+              i === activeSlide ? "w-12 bg-white" : "w-8 bg-white/30"
+            }`}
+          />
+        ))}
       </div>
     </section>
   );
