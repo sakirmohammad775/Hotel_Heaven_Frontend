@@ -39,7 +39,6 @@ const HotelHero = () => {
             about ‘making moments’, recognizing that small gestures make a big difference. 
             We do ordinary things in an extraordinary way.
           </p>
-
           {/* CTA Button */}
           <div className="flex justify-center">
             <button className="bg-[#1e2d35] text-white px-12 py-5 text-[10px] tracking-[0.3em] uppercase transition-all hover:bg-[#b1a494] hover:scale-105 active:scale-95 shadow-xl">
