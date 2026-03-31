@@ -17,7 +17,7 @@ import Offers from "../components/Home/Offers";
 import NearbyPlaces from "../components/Home/NearbyPlaces";
 import Hotels from "../components/Home/Hotels";
 import ContactUs from "../components/Home/ContactUs";
-import Support from "../components/Dashboard/support";
+import Support from "../components/Dashboard/Support"
 
 const AppRoutes = () => {
   return (
