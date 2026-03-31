@@ -1,7 +1,6 @@
 import { useForm } from "react-hook-form";
-
-import { Link, useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { Link, useNavigate, useLocation } from "react-router-dom";
+import { useState, useEffect } from "react";
 import ErrorAlert from "../components/ErrorAlert";
 import useAuthContext from "../hooks/useAuthContext";
 
@@ -11,73 +10,95 @@ const Login = () => {
     handleSubmit,
     formState: { errors },
   } = useForm();
+  
   const { user, errorMsg, loginUser } = useAuthContext();
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation();
+
+  // Redirect if user is already logged in or just logged in successfully
+  // This is the most reliable way to handle the "stays on page" bug
+  useEffect(() => {
+    if (user) {
+      const from = location.state?.from?.pathname || "/dashboard";
+      navigate(from, { replace: true });
+    }
+  }, [user, navigate, location]);
 
   const onSubmit = async (data) => {
     setLoading(true);
     try {
-      const res = await loginUser(data);
-
-      //  ONLY navigate if login success
-      if (res?.success) {
-        navigate("/dashboard");
-      }
+      // loginUser should update the 'user' state in your AuthContext
+      await loginUser(data);
+      // We don't necessarily need to navigate here because the useEffect 
+      // above will catch the 'user' change and move the user automatically.
     } catch (error) {
       console.log("Login failed", error);
     } finally {
       setLoading(false);
     }
   };
+
   return (
-    <div className="h-screen  text-black flex items-center justify-center bg-[#f8f6f3]">
+    <div className="h-screen text-white flex items-center justify-center bg-black">
       <form
         onSubmit={handleSubmit(onSubmit)}
-        className="bg-white p-12 shadow-xl w-full max-w-md border-t-4 border-[#004225]"
+        className="bg-stone-950 p-12 shadow-2xl w-full max-w-md border border-white/5"
       >
-        {errorMsg && <ErrorAlert error={errorMsg}></ErrorAlert>}
-        <h2 className="text-2xl font-serif text-center mb-8 uppercase tracking-widest">
-          Sign In
-        </h2>
-        <div className="space-y-6">
-          <input
-            type="email"
-            placeholder="EMAIL"
-            className="w-full border-b p-3 outline-none text-xs tracking-widest"
-            {...register("email", { required: "Email is required " })}
-          />
-          {errors.email && (
-            <span className="label-text-alt text-error">
-              {errors.email.message}
-            </span>
-          )}
-          <input
-            type="password"
-            placeholder="PASSWORD"
-            className="w-full border-b p-3 outline-none text-xs tracking-widest"
-            {...register("password", { required: "Password is required" })}
-          />
-          {errors.password && (
-            <span className="label-text-alt text-error">
-              {errors.password.message}
-            </span>
-          )}
+        {errorMsg && <ErrorAlert error={errorMsg} />}
+        
+        <div className="flex flex-col items-center mb-10">
+          <div className="w-12 h-[1px] bg-[#b1a494] mb-4"></div>
+          <h2 className="text-3xl font-serif text-center uppercase tracking-[0.2em]">
+            Sign <span className="italic text-[#b1a494]">In</span>
+          </h2>
+        </div>
+
+        <div className="space-y-8">
+          <div className="relative">
+            <input
+              type="email"
+              placeholder="Email"
+              className="w-full bg-transparent border-b border-white/10 p-3 outline-none text-[10px] tracking-[0.2em] focus:border-[#b1a494] transition-colors placeholder:text-stone-700 "
+              {...register("email", { required: "Email is required" })}
+            />
+            {errors.email && (
+              <span className="text-[9px] text-red-500 uppercase tracking-widest mt-1 block">
+                {errors.email.message}
+              </span>
+            )}
+          </div>
+
+          <div className="relative">
+            <input
+              type="password"
+              placeholder="password"
+              className="w-full bg-transparent border-b border-white/10 p-3 outline-none text-[10px] tracking-[0.2em] focus:border-[#b1a494] transition-colors placeholder:text-stone-700 "
+              {...register("password", { required: "Password is required" })}
+            />
+            {errors.password && (
+              <span className="text-[9px] text-red-500 uppercase tracking-widest mt-1 block">
+                {errors.password.message}
+              </span>
+            )}
+          </div>
+
           <button
             disabled={loading}
-            className="w-full bg-[#1e2d35] text-white py-4 uppercase text-[10px] tracking-[0.4em] font-bold hover:bg-[#b1a494] transition-all"
+            className="w-full bg-[#b1a494] text-black py-4 uppercase text-[10px] tracking-[0.4em] font-black hover:bg-[#fce0c0] transition-all disabled:opacity-50 disabled:cursor-not-out"
           >
-            {loading ? "Signing In......." : "Sign In"}
+            {loading ? "Authenticating..." : "Enter Sanctuary"}
           </button>
-           <p className="mt-10 text-center text-[10px] font-sans text-stone-400 uppercase tracking-[0.2em]">
-          Create A New Account?{" "}
-          <Link
-            to="/register"
-            className="text-stone-800 font-bold border-b border-stone-800 pb-1 ml-2 hover:text-[#b1a494] hover:border-[#b1a494] transition-colors"
-          >
-            Sign Up
-          </Link>
-        </p>
+
+          <p className="mt-10 text-center text-[9px] text-stone-500 uppercase tracking-[0.3em] font-bold">
+            New to the collection?{" "}
+            <Link
+              to="/register"
+              className="text-[#b1a494] border-b border-[#b1a494]/30 pb-1 ml-2 hover:text-white hover:border-white transition-all"
+            >
+              Create Account
+            </Link>
+          </p>
         </div>
       </form>
     </div>

@@ -37,7 +37,7 @@ const Hotels = () => {
   }, [hotels, searchQuery, maxPrice]);
 
   return (
-    <section className="bg-stone-950 min-h-screen py-32 px-6">
+    <section className="bg-[#1e2d35] min-h-screen py-32 px-6">
       <div className="max-w-7xl mx-auto">
         
         {/* Header Section */}

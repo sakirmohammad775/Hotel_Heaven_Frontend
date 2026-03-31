@@ -1,4 +1,4 @@
-import { Route, Routes } from "react-router-dom";
+import { Route, Router, Routes } from "react-router-dom";
 import Home from "../pages/Home";
 import SpecificHotelDetails from "../components/Hotel/SpecificHotelPage";
 import MainLayout from "../layout/MainLayout";
@@ -10,7 +10,6 @@ import PrivateRoute from "../components/PrivateRoute";
 import DashboardLayout from "../layout/DashboardLayout";
 import BookingCheckout from "../components/Booking/BookingCheckout";
 import Profile from "../pages/Profile";
-import Cart from "../components/Booking/Cart";
 import PaymentSuccess from "../pages/PaymentSuccess";
 import PaymentFailed from "../pages/PaymentFailed";
 import Bookings from "../components/Booking/Bookings";
@@ -18,6 +17,7 @@ import Offers from "../components/Home/Offers";
 import NearbyPlaces from "../components/Home/NearbyPlaces";
 import Hotels from "../components/Home/Hotels";
 import ContactUs from "../components/Home/ContactUs";
+import Support from "../components/Dashboard/support";
 
 const AppRoutes = () => {
   return (
@@ -28,17 +28,18 @@ const AppRoutes = () => {
         <Route path="/login" element={<Login></Login>}></Route>
         <Route path="/register" element={<Register></Register>}></Route>
         <Route path="/activate/:uid/:token" element={<ActivateAccount />} />
-        <Route path="/checkout" element={<BookingCheckout />} />
-        <Route path="/cart" element={<Cart></Cart>} />
         <Route path="/contact" element={<ContactUs></ContactUs>}></Route>
         <Route path="/offers" element={<Offers></Offers>}></Route>
         <Route path="/gallery" element={<NearbyPlaces></NearbyPlaces>}></Route>
         <Route path="/hotels" element={<Hotels></Hotels>}></Route>
-        {/* Payment result pages */}
-        <Route path="/payment/success" element={<PaymentSuccess />} />
-        <Route path="/payment/failed" element={<PaymentFailed />} />
-        <Route path="/payment/cancelled" element={<PaymentFailed />} />
 
+        {/* Protected Checkout & Payment (Full Width) */}
+        <Route element={<PrivateRoute />}>
+          <Route path="/checkout" element={<BookingCheckout />} />
+          <Route path="/payment/success" element={<PaymentSuccess />} />
+          <Route path="/payment/failed" element={<PaymentFailed />} />
+          <Route path="/payment/cancelled" element={<PaymentFailed />} />
+        </Route>
         <Route
           path="/dashboard"
           element={
@@ -50,7 +51,7 @@ const AppRoutes = () => {
           <Route index element={<Dashboard></Dashboard>}></Route>
           <Route path="profile" element={<Profile />} />
           <Route path="bookings" element={<Bookings />} />
-          <Route path="cart" element={<Cart></Cart>}/>
+          <Route path="support" element={<Support></Support>}></Route>
         </Route>
       </Route>
     </Routes>

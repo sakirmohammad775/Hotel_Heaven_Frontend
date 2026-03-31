@@ -1,41 +1,52 @@
-// 
-const TableCard = ({ title }) => (
-  <div className="bg-white rounded-3xl shadow-sm border border-slate-100 overflow-hidden">
-    <div className="p-6 border-b border-slate-50 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-      <h3 className="font-bold text-blue-500 tracking-wide">{title}</h3>
-      <div className="w-full sm:w-64 flex items-center bg-slate-50 border border-slate-200 rounded-xl px-3 py-1.5">
-        <input 
-          type="text" 
-          placeholder="Search records..." 
-          className="bg-transparent border-none text-xs focus:outline-none w-full text-slate-600"
-        />
-      </div>
+const TableCard = ({ title, data, loading, emptyMsg }) => (
+  <div className="bg-stone-950 border border-white/5 overflow-hidden">
+    <div className="p-6 border-b border-white/5 flex justify-between items-center bg-white/[0.01]">
+      <h3 className="text-[11px] uppercase tracking-[0.3em] text-[#b1a494] font-black">{title}</h3>
+      <span className="text-[10px] text-stone-600 font-bold uppercase">{data.length} Guests</span>
     </div>
+    
     <div className="overflow-x-auto">
-      <table className="w-full text-sm text-left">
-        <thead className="bg-slate-50/50 text-slate-400 uppercase text-[9px] font-bold tracking-[0.15em]">
+      <table className="w-full text-left">
+        <thead className="bg-black text-stone-500 uppercase text-[9px] font-black tracking-[0.2em]">
           <tr>
-            <th className="px-6 py-5">Reser. No</th>
-            <th className="px-6 py-5">Source</th>
-            <th className="px-6 py-5">Guest Name</th>
-            <th className="px-6 py-5 text-right">Balance</th>
+            <th className="px-6 py-4">Ref. No</th>
+            <th className="px-6 py-4">Guest</th>
+            <th className="px-6 py-4 text-right">Status</th>
           </tr>
         </thead>
-        <tbody className="divide-y divide-slate-50 text-slate-600">
-          {[
-            { id: "46778", source: "46778", guest: "Baldwin Austin", balance: "$0" },
-            { id: "56473", source: "64783", guest: "Verity Arnold", balance: "$26" },
-          ].map((item, idx) => (
-            <tr key={idx} className="hover:bg-blue-50/30 transition-colors">
-              <td className="px-6 py-4 font-medium text-slate-400">{item.id}</td>
-              <td className="px-6 py-4">{item.source}</td>
-              <td className="px-6 py-4 font-semibold text-slate-700">{item.guest}</td>
-              <td className="px-6 py-4 text-right font-bold text-slate-900">{item.balance}</td>
+        <tbody className="divide-y divide-white/5 text-stone-400">
+          {loading ? (
+            <tr><td colSpan="3" className="py-10 text-center animate-pulse">Synchronizing...</td></tr>
+          ) : data.length > 0 ? (
+            data.map((item) => (
+              <tr key={item.id} className="hover:bg-white/[0.02] transition-colors">
+                <td className="px-6 py-4 text-[11px] font-bold text-stone-600">
+                  #{String(item.id).slice(0, 5).toUpperCase()}
+                </td>
+                <td className="px-6 py-4">
+                  <div className="flex flex-col">
+                    <span className="text-sm text-white font-serif">{item.user?.username || "Guest"}</span>
+                    <span className="text-[9px] text-stone-600 uppercase tracking-widest">{item.check_in}</span>
+                  </div>
+                </td>
+                <td className="px-6 py-4 text-right">
+                   <span className="text-[9px] font-black text-[#b1a494] uppercase tracking-tighter">
+                     {item.status}
+                   </span>
+                </td>
+              </tr>
+            ))
+          ) : (
+            <tr>
+              <td colSpan="3" className="py-12 text-center text-[10px] uppercase tracking-widest text-stone-700">
+                {emptyMsg}
+              </td>
             </tr>
-          ))}
+          )}
         </tbody>
       </table>
     </div>
   </div>
 );
-export default TableCard
+
+export default TableCard;

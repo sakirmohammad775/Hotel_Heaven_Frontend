@@ -1,95 +1,112 @@
 import { useState } from "react";
+import { FiEye, FiEyeOff } from "react-icons/fi";
 
 const PasswordChangeForm = ({ register, errors, watch, isEditing }) => {
   const [isPasswordSectionOpen, setIsPasswordSectionOpen] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
 
+  // Brand-consistent styles
+  const inputBaseClasses = `
+    w-full bg-transparent border-b py-3 text-sm transition-all duration-300 outline-none
+    ${isEditing 
+      ? "border-white/20 text-white focus:border-[#b1a494] placeholder:text-stone-800" 
+      : "border-transparent text-stone-500 cursor-not-allowed"
+    }
+  `;
+
+  const labelClasses = "text-[10px] uppercase tracking-[0.3em] text-stone-500 font-bold mb-1 block";
+
   return (
-    <div className="mt-4">
+    <div className="mt-8">
+      {/* Toggle Button - Editorial Style */}
       <button
         type="button"
-        className="btn btn-link p-0 justify-start text-primary font-semibold h-auto min-h-0"
+        className="flex items-center gap-3 group transition-colors"
         onClick={() => setIsPasswordSectionOpen(!isPasswordSectionOpen)}
       >
-        Change Password
+        <div className={`w-8 h-[1px] transition-all duration-500 ${isPasswordSectionOpen ? "w-12 bg-[#b1a494]" : "bg-stone-600"}`}></div>
+        <span className={`text-[10px] uppercase tracking-[0.2em] font-black ${isPasswordSectionOpen ? "text-[#b1a494]" : "text-stone-500 group-hover:text-white"}`}>
+          {isPasswordSectionOpen ? "Close Security Settings" : "Change Security Password"}
+        </span>
       </button>
+
       {isPasswordSectionOpen && (
-        <div className="mt-3 space-y-3 pl-2 border-l-2 border-base-300">
+        <div className="mt-10 space-y-8 animate-in fade-in slide-in-from-top-2 duration-500">
+          
           {/* Current Password */}
-          <div className="form-control">
-            <label className="label">Current Password</label>
-            <div className="relative">
-              <input
-                type={showPassword ? "text" : "password"}
-                className="input input-bordered bg-base-200 w-full pr-10"
-                disabled={!isEditing}
-                {...register("current_password", {
-                  required: "Current Password is Required",
-                })}
-              />
-            </div>
+          <div className="relative group">
+            <label className={labelClasses}>Current Password</label>
+            <input
+              type={showPassword ? "text" : "password"}
+              placeholder="••••••••"
+              className={inputBaseClasses}
+              disabled={!isEditing}
+              {...register("current_password", {
+                required: "Current Password is Required",
+              })}
+            />
             {errors.current_password && (
-              <p className="text-red-500 text-sm mt-1">
+              <p className="text-[10px] text-red-400 mt-2 uppercase tracking-widest italic font-medium">
                 {errors.current_password.message}
               </p>
             )}
           </div>
-          {/* New Password */}
-          <div className="form-control">
-            <label className="label">New Password</label>
+
+          {/* New Password & Confirm Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-8">
             <div className="relative">
+              <label className={labelClasses}>New Password</label>
               <input
                 type={showPassword ? "text" : "password"}
-                className="input input-bordered bg-base-200 w-full pr-10"
+                placeholder="New security key"
+                className={inputBaseClasses}
                 disabled={!isEditing}
                 {...register("new_password", {
                   required: "New Password is Required",
                   minLength: {
                     value: 8,
-                    message: "Password must be at least 8 characters",
+                    message: "Minimum 8 characters required",
                   },
                 })}
               />
+              {errors.new_password && (
+                <p className="text-[10px] text-red-400 mt-2 uppercase tracking-widest italic font-medium">
+                  {errors.new_password.message}
+                </p>
+              )}
             </div>
-            {errors.new_password && (
-              <p className="text-red-500 text-sm mt-1">
-                {errors.new_password.message}
-              </p>
-            )}
-          </div>
-          {/* Confirm New Password */}
-          <div className="form-control">
-            <label className="label">Confirm New Password</label>
+
             <div className="relative">
+              <label className={labelClasses}>Confirm New Password</label>
               <input
                 type={showPassword ? "text" : "password"}
-                className="input input-bordered bg-base-200 w-full pr-10"
+                placeholder="Repeat new key"
+                className={inputBaseClasses}
                 disabled={!isEditing}
                 {...register("confirm_new_password", {
                   validate: (value) =>
-                    value === watch("new_password") || "Passwords do not match",
+                    value === watch("new_password") || "Keys do not match",
                 })}
               />
+              {errors.confirm_new_password && (
+                <p className="text-[10px] text-red-400 mt-2 uppercase tracking-widest italic font-medium">
+                  {errors.confirm_new_password.message}
+                </p>
+              )}
             </div>
-            {errors.confirm_new_password && (
-              <p className="text-red-500 text-sm mt-1">
-                {errors.confirm_new_password.message}
-              </p>
-            )}
           </div>
 
-          {/* Show Password Checkbox  */}
+          {/* Show/Hide Password Toggle - Clean Minimalist Style */}
           {isEditing && (
-            <div className="form-control">
-              <label className="label cursor-pointer">
-                <span className="label-text">Show Password</span>
-                <input
-                  type="checkbox"
-                  className="toggle"
-                  checked={showPassword}
-                  onChange={() => setShowPassword(!showPassword)}
-                />
-              </label>
+            <div className="flex justify-end">
+              <button 
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="flex items-center gap-2 text-[9px] uppercase tracking-[0.2em] text-stone-500 hover:text-[#b1a494] transition-colors"
+              >
+                {showPassword ? <FiEyeOff size={14} /> : <FiEye size={14} />}
+                {showPassword ? "Hide Characters" : "Show Characters"}
+              </button>
             </div>
           )}
         </div>

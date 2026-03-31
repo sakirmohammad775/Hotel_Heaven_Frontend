@@ -110,7 +110,7 @@ const Navbar = () => {
                       </div>
                     </div>
                     <ul tabIndex={0} className="menu menu-sm dropdown-content bg-white text-slate-800 rounded-box z-[10] mt-3 w-52 p-2 shadow-xl border border-slate-100">
-                      <li><Link to="/dashboard/profile" className="py-3">Profile</Link></li>
+                      <li><Link to="/dashboard" className="py-3">Dashboard</Link></li>
                       <li><button onClick={logoutUser} className="py-3 text-error font-bold">Logout</button></li>
                     </ul>
                   </div>
