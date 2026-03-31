@@ -14,11 +14,10 @@ import Cart from "../components/Booking/Cart";
 import PaymentSuccess from "../pages/PaymentSuccess";
 import PaymentFailed from "../pages/PaymentFailed";
 import Bookings from "../components/Booking/Bookings";
-import Contact from "../components/Home/contact";
 import Offers from "../components/Home/Offers";
 import NearbyPlaces from "../components/Home/NearbyPlaces";
-import { Hotel } from "lucide-react";
 import Hotels from "../components/Home/Hotels";
+import ContactUs from "../components/Home/ContactUs";
 
 const AppRoutes = () => {
   return (
@@ -31,7 +30,7 @@ const AppRoutes = () => {
         <Route path="/activate/:uid/:token" element={<ActivateAccount />} />
         <Route path="/checkout" element={<BookingCheckout />} />
         <Route path="/cart" element={<Cart></Cart>} />
-        <Route path="/contact" element={<Contact></Contact>}></Route>
+        <Route path="/contact" element={<ContactUs></ContactUs>}></Route>
         <Route path="/offers" element={<Offers></Offers>}></Route>
         <Route path="/gallery" element={<NearbyPlaces></NearbyPlaces>}></Route>
         <Route path="/hotels" element={<Hotels></Hotels>}></Route>

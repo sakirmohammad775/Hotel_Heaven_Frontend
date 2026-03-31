@@ -1,6 +1,6 @@
 import React from 'react';
 
-const Contact = () => {
+const ContactUs = () => {
   return (
     <div className="bg-black pt-24">
       {/* SECTION 1: Form & Overlapping Images */}
@@ -96,4 +96,4 @@ const Contact = () => {
   );
 };
 
-export default Contact;
+export default ContactUs;
