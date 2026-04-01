@@ -6,7 +6,7 @@ A modern hotel booking frontend built with **React + Vite + Tailwind CSS**, inte
 
 ## 🚀 Live Demo
 
-👉 https://your-vercel-url.vercel.app
+👉 https://hotel-heaven-frontend.vercel.app/
 
 ---
 
