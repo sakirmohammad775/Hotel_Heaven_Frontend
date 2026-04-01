@@ -17,6 +17,7 @@ const Sidebar = () => {
     { to: "/dashboard/all-bookings", icon: <LayoutList size={18} />, label: "All Bookings" },
     { to: "/dashboard/all-users", icon: <Bed size={18} />, label: "All Users" },
     { to: "/dashboard/basic-info", icon: <Info size={18} />, label: "Basic Information" },
+    { to: "/dashboard/profile", icon: <User size={18} />, label: "Profile" },
     { to: "/dashboard/address", icon: <MapPin size={18} />, label: "Address" },
     { to: "/dashboard/food", icon: <Utensils size={18} />, label: "Dining" },
     { to: "/dashboard/lounge", icon: <Coffee size={18} />, label: "Executive Lounge" },

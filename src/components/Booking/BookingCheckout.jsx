@@ -2,6 +2,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { useEffect } from "react";
 import authApiClient from "../../services/Auth-Api-Client";
+import useAuthContext from "../../hooks/useAuthContext";
 
 const InputField = ({
   label,
@@ -37,7 +38,7 @@ const InputField = ({
 const BookingCheckout = () => {
   const location = useLocation();
   const navigate = useNavigate();
-
+  const {user}=useAuthContext()
   const {
     hotelId,
     totalPrice,
@@ -54,25 +55,22 @@ const BookingCheckout = () => {
     formState: { errors, isSubmitting },
   } = useForm();
 
-  // 2. Auto-fill logic
+  // 3. Implement the same useEffect logic from your Profile component
   useEffect(() => {
     if (!hotelId) {
       navigate("/hotels");
       return;
     }
 
-    // Attempt to get user from local storage (or your Auth provider)
-    const storedUser = localStorage.getItem("user"); // Or however you store user data
-    if (storedUser) {
-      const user = JSON.parse(storedUser);
-      if (user.email) {
-        // This programmatically sets the value of the "email" field
-        setValue("email", user.email);
-      }
-      if (user.first_name) setValue("first_name", user.first_name);
-      if (user.last_name) setValue("last_name", user.last_name);
+    if (user) {
+      // Automatically fills 'email', 'first_name', etc., if they exist in the user object
+      Object.keys(user).forEach((key) => {
+        setValue(key, user[key], { shouldValidate: true });
+      });
     }
-  }, [hotelId, navigate, setValue]);
+  }, [user, hotelId, navigate, setValue]);
+
+  // ... rest of your Tax Logic and onSubmit ...
 
   // Tax Logic
   const accommodationTax = totalPrice * 0.2;
@@ -153,15 +151,19 @@ const BookingCheckout = () => {
               <InputField
                 label="First Name"
                 name="first_name"
+                required
                 register={register}
                 errors={errors}
               />
               <InputField
                 label="Last Name"
                 name="last_name"
+                required
                 register={register}
                 errors={errors}
               />
+
+              {/* This field will now be auto-filled from the user object */}
               <InputField
                 label="Email"
                 name="email"
@@ -170,6 +172,7 @@ const BookingCheckout = () => {
                 register={register}
                 errors={errors}
               />
+
               <InputField
                 label="Phone"
                 name="phone"
@@ -258,3 +261,8 @@ const BookingCheckout = () => {
 };
 
 export default BookingCheckout;
+
+
+
+
+

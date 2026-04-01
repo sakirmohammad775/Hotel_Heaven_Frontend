@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import authApiClient from "../services/Auth-Api-Client";
+import useAuthContext from "../hooks/useAuthContext";
 
 const PaymentSuccess = () => {
   const { user, isLoading: authLoading } = useAuthContext(); // Get auth status
@@ -30,8 +31,8 @@ const PaymentSuccess = () => {
       .finally(() => setLoading(false));
   }, [bookingId, navigate, authLoading, user]); // Add dependencies
 
-  // Show your luxury loader if either Auth is checking or Booking is fetching
-  if (authLoading || loading) {
+  // Show loader if Auth is working OR if we have a bookingId but haven't fetched the booking yet
+  if (authLoading || (bookingId && !booking && loading)) {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center bg-[#f8f6f3]">
         <div className="w-10 h-[1px] bg-[#1e2d35] animate-pulse mb-4"></div>
