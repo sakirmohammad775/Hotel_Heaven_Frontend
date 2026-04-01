@@ -17,7 +17,15 @@ import Offers from "../components/Home/Offers";
 import NearbyPlaces from "../components/Home/NearbyPlaces";
 import Hotels from "../components/Home/Hotels";
 import ContactUs from "../components/Home/ContactUs";
-import Support from "../components/Dashboard/Support"
+import Support from "../components/Dashboard/Support";
+import BasicInfo from "../components/Dashboard/AdminDashboard/BasicInfo";
+import Address from "../components/Dashboard/AdminDashboard/Address";
+import Dining from "../components/Dashboard/AdminDashboard/Dining";
+import Lounge from "../components/Dashboard/AdminDashboard/Lounge";
+import Parking from "../components/Dashboard/AdminDashboard/Parking";
+import SpaGym from "../components/Dashboard/AdminDashboard/SpaGym";
+import AllUsers from "../components/Dashboard/AdminDashboard/AllUsers";
+import AllBookings from "../components/Dashboard/AdminDashboard/AllBookings";
 
 const AppRoutes = () => {
   return (
@@ -32,14 +40,11 @@ const AppRoutes = () => {
         <Route path="/offers" element={<Offers></Offers>}></Route>
         <Route path="/gallery" element={<NearbyPlaces></NearbyPlaces>}></Route>
         <Route path="/hotels" element={<Hotels></Hotels>}></Route>
+        <Route path="/payment/success" element={<PaymentSuccess />} />
+        <Route path="/payment/failed" element={<PaymentFailed />} />
+        <Route path="/payment/cancelled" element={<PaymentFailed />} />
+        <Route path="/checkout" element={<BookingCheckout />} />
 
-        {/* Protected Checkout & Payment (Full Width) */}
-        <Route element={<PrivateRoute />}>
-          <Route path="/checkout" element={<BookingCheckout />} />
-          <Route path="/payment/success" element={<PaymentSuccess />} />
-          <Route path="/payment/failed" element={<PaymentFailed />} />
-          <Route path="/payment/cancelled" element={<PaymentFailed />} />
-        </Route>
         <Route
           path="/dashboard"
           element={
@@ -52,6 +57,16 @@ const AppRoutes = () => {
           <Route path="profile" element={<Profile />} />
           <Route path="bookings" element={<Bookings />} />
           <Route path="support" element={<Support></Support>}></Route>
+
+          {/* New Luxury Service Routes */}
+          <Route path="all-users" element={<AllUsers></AllUsers>}></Route>
+          <Route path="all-bookings" element={<AllBookings></AllBookings>}></Route>
+          <Route path="basic-info" element={<BasicInfo />} />
+          <Route path="address" element={<Address />} />
+          <Route path="food" element={<Dining />} />
+          <Route path="lounge" element={<Lounge />} />
+          <Route path="parking" element={<Parking />} />
+          <Route path="spa" element={<SpaGym />} />
         </Route>
       </Route>
     </Routes>

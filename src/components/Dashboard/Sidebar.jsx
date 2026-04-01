@@ -14,12 +14,11 @@ const Sidebar = () => {
 
   const adminMenus = [
     { to: "/dashboard", icon: <LayoutDashboard size={18} />, label: "Dashboard" },
+    { to: "/dashboard/all-bookings", icon: <LayoutList size={18} />, label: "All Bookings" },
+    { to: "/dashboard/all-users", icon: <Bed size={18} />, label: "All Users" },
     { to: "/dashboard/basic-info", icon: <Info size={18} />, label: "Basic Information" },
     { to: "/dashboard/address", icon: <MapPin size={18} />, label: "Address" },
-    { to: "/dashboard/rooms", icon: <Bed size={18} />, label: "Rooms" },
-    { to: "/dashboard/room-details", icon: <LayoutList size={18} />, label: "Room Details" },
     { to: "/dashboard/food", icon: <Utensils size={18} />, label: "Dining" },
-    { to: "/dashboard/bar", icon: <Music size={18} />, label: "Nightclub & Bar" },
     { to: "/dashboard/lounge", icon: <Coffee size={18} />, label: "Executive Lounge" },
     { to: "/dashboard/parking", icon: <Car size={18} />, label: "Parking" },
     { to: "/dashboard/spa", icon: <Dumbbell size={18} />, label: "SPA & Gym" },
