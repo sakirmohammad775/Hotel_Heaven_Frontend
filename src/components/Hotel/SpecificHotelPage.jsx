@@ -10,7 +10,6 @@ const SpecificHotelPage = () => {
   const navigate = useNavigate();
   const { user } = useAuthContext();
   const isAdmin = user?.is_staff || user?.is_superuser; // Adjust based on your Auth object
-
   const [hotel, setHotel] = useState(null);
   const [checkIn, setCheckIn] = useState("");
   const [checkOut, setCheckOut] = useState("");

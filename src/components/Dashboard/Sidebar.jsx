@@ -38,7 +38,7 @@ const Sidebar = () => {
   return (
     <>
       {/* MOBILE HEADER - Editorial Style */}
-      <div className="lg:hidden bg-stone-950 border-b border-white/5 p-4 flex items-center justify-between fixed top-0 w-full z-[50]">
+      <div className="lg:hidden bg-stone-950 border-b border-white/5 p-4 flex items-center justify-between fixed top-0 w-full z-[50] mt-14">
         <div className="flex items-center gap-3">
           <button
             onClick={() => setIsSidebarOpen(true)}
@@ -122,7 +122,7 @@ const Sidebar = () => {
       {/* MOBILE OVERLAY */}
       {isSidebarOpen && (
         <div
-          className="fixed inset-0 bg-black/80 backdrop-blur-md z-[90] lg:hidden"
+          className="fixed inset-0 bg-black/80 backdrop-blur-md z-[90] lg:hidden "
           onClick={() => setIsSidebarOpen(false)}
         />
       )}
