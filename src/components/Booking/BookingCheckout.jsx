@@ -1,6 +1,6 @@
 import { useLocation, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import authApiClient from "../../services/Auth-Api-Client";
 import useAuthContext from "../../hooks/useAuthContext";
 
@@ -35,10 +35,25 @@ const InputField = ({
   </div>
 );
 
+// ===== COUPON DATABASE =====
+// Keep this in sync with your Offers.jsx coupon codes
+const AVAILABLE_COUPONS = {
+  "BREAKFAST2025": { discount: 0, discountType: "breakfast", description: "Free Breakfast Included" },
+  "SAVE10": { discount: 10, discountType: "percentage", description: "10% Discount" },
+  "ADVANCE15": { discount: 15, discountType: "percentage", description: "15% Early Booking Discount" },
+};
+
 const BookingCheckout = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const {user}=useAuthContext()
+  const { user } = useAuthContext();
+  
+  // ===== COUPON STATE =====
+  const [appliedCoupon, setAppliedCoupon] = useState(null);
+  const [couponInput, setCouponInput] = useState("");
+  const [couponError, setCouponError] = useState("");
+  const [couponSuccess, setCouponSuccess] = useState("");
+
   const {
     hotelId,
     totalPrice,
@@ -48,6 +63,7 @@ const BookingCheckout = () => {
     checkOut,
     days,
   } = location.state || {};
+
   const {
     register,
     handleSubmit,
@@ -55,7 +71,6 @@ const BookingCheckout = () => {
     formState: { errors, isSubmitting },
   } = useForm();
 
-  // 3. Implement the same useEffect logic from your Profile component
   useEffect(() => {
     if (!hotelId) {
       navigate("/hotels");
@@ -63,21 +78,65 @@ const BookingCheckout = () => {
     }
 
     if (user) {
-      // Automatically fills 'email', 'first_name', etc., if they exist in the user object
       Object.keys(user).forEach((key) => {
         setValue(key, user[key], { shouldValidate: true });
       });
     }
   }, [user, hotelId, navigate, setValue]);
 
-  // ... rest of your Tax Logic and onSubmit ...
+  // ===== COUPON VALIDATION & APPLICATION =====
+  const handleApplyCoupon = () => {
+    // Clear previous messages
+    setCouponError("");
+    setCouponSuccess("");
 
-  // Tax Logic
-  const accommodationTax = totalPrice * 0.2;
-  const feesAmount = totalPrice * 0.45;
+    const trimmedCode = couponInput.trim().toUpperCase();
+
+    if (!trimmedCode) {
+      setCouponError("Please enter a coupon code");
+      return;
+    }
+
+    if (AVAILABLE_COUPONS[trimmedCode]) {
+      setAppliedCoupon(trimmedCode);
+      setCouponSuccess(`✓ Coupon "${trimmedCode}" applied successfully!`);
+      setCouponInput(""); // Clear input after successful application
+    } else {
+      setCouponError("Invalid coupon code. Please check and try again.");
+      setAppliedCoupon(null);
+    }
+  };
+
+  const handleRemoveCoupon = () => {
+    setAppliedCoupon(null);
+    setCouponInput("");
+    setCouponError("");
+    setCouponSuccess("");
+  };
+
+  // ===== PRICE CALCULATIONS =====
+  const basePrice = parseFloat(totalPrice);
+  
+  // Apply coupon discount if valid
+  let discountedPrice = basePrice;
+  let discountAmount = 0;
+
+  if (appliedCoupon) {
+    const coupon = AVAILABLE_COUPONS[appliedCoupon];
+    if (coupon.discountType === "percentage") {
+      discountAmount = basePrice * (coupon.discount / 100);
+      discountedPrice = basePrice - discountAmount;
+    }
+    // breakfast type doesn't reduce price, just shows as applied
+  }
+
+  // Tax calculations on discounted price
+  const accommodationTax = discountedPrice * 0.2;
+  const feesAmount = discountedPrice * 0.45;
   const feesTax = feesAmount * 0.12;
+  
   const finalTotal = (
-    parseFloat(totalPrice) +
+    discountedPrice +
     accommodationTax +
     feesAmount +
     feesTax
@@ -86,7 +145,6 @@ const BookingCheckout = () => {
   const onSubmit = async (formData) => {
     try {
       // STEP 1: CREATE A VIRTUAL CART FOR THIS TRANSACTION
-      // Your model requires a Cart to hold the items before it becomes a Booking
       const cartRes = await authApiClient.post("/carts/");
       const cartId = cartRes.data.id;
 
@@ -96,15 +154,20 @@ const BookingCheckout = () => {
         quantity: 1,
       });
 
-      // STEP 3: CONVERT CART TO BOOKING
-      // We pass the dates and the total price your model expects
-      const bookingResponse = await authApiClient.post("/bookings/", {
+      // STEP 3: CONVERT CART TO BOOKING (with coupon code if applied)
+      const bookingPayload = {
         cart_id: cartId,
         check_in: checkIn,
         check_out: checkOut,
         total_price: finalTotal,
-      });
+      };
 
+      // Add coupon code to booking if applied
+      if (appliedCoupon) {
+        bookingPayload.coupon_code = appliedCoupon;
+      }
+
+      const bookingResponse = await authApiClient.post("/bookings/", bookingPayload);
       const newBookingId = bookingResponse.data.id;
 
       // STEP 4: INITIATE PAYMENT
@@ -163,7 +226,6 @@ const BookingCheckout = () => {
                 errors={errors}
               />
 
-              {/* This field will now be auto-filled from the user object */}
               <InputField
                 label="Email"
                 name="email"
@@ -180,6 +242,7 @@ const BookingCheckout = () => {
                 register={register}
                 errors={errors}
               />
+              
               <div className="md:col-span-2">
                 <InputField
                   label="Street Address"
@@ -188,6 +251,76 @@ const BookingCheckout = () => {
                   register={register}
                   errors={errors}
                 />
+              </div>
+
+              {/* ===== COUPON CODE INPUT BOX ===== */}
+              <div className="md:col-span-2 pt-6 border-t border-stone-200">
+                <div className="bg-stone-50 border-2 border-stone-200 p-8 rounded-sm">
+                  <div className="mb-4">
+                    <label className="text-[10px] uppercase tracking-[0.3em] font-bold text-stone-500 block mb-4">
+                      ✨ Have a Coupon Code?
+                    </label>
+                    
+                    <div className="flex flex-col sm:flex-row gap-3">
+                      <input
+                        type="text"
+                        value={couponInput}
+                        onChange={(e) => {
+                          setCouponInput(e.target.value);
+                          setCouponError("");
+                          setCouponSuccess("");
+                        }}
+                        placeholder="Enter coupon code (e.g., SAVE10)"
+                        className="flex-1 bg-white border border-stone-300 px-4 py-3 text-[11px] tracking-widest uppercase outline-none transition-all focus:border-[#b1a494] focus:ring-1 focus:ring-[#b1a494]"
+                        disabled={appliedCoupon !== null}
+                      />
+                      <button
+                        type="button"
+                        onClick={handleApplyCoupon}
+                        disabled={appliedCoupon !== null}
+                        className="bg-[#b1a494] hover:bg-stone-700 text-white px-6 py-3 text-[10px] font-bold uppercase tracking-[0.2em] transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                      >
+                        Apply
+                      </button>
+                    </div>
+
+                    {/* Error Message */}
+                    {couponError && (
+                      <div className="mt-3 text-red-600 text-[9px] uppercase tracking-wide font-medium">
+                        ✗ {couponError}
+                      </div>
+                    )}
+
+                    {/* Success Message */}
+                    {couponSuccess && (
+                      <div className="mt-3 text-green-600 text-[9px] uppercase tracking-wide font-medium">
+                        {couponSuccess}
+                      </div>
+                    )}
+
+                    {/* Applied Coupon Display */}
+                    {appliedCoupon && (
+                      <div className="mt-4 bg-green-50 border-l-4 border-green-400 p-4 flex items-center justify-between">
+                        <div>
+                          <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-green-800">
+                            Code Applied: {appliedCoupon}
+                          </p>
+                          <p className="text-[9px] text-green-700 mt-1">
+                            {AVAILABLE_COUPONS[appliedCoupon].description}
+                          </p>
+                        </div>
+                        <button
+                          type="button"
+                          onClick={handleRemoveCoupon}
+                          className="text-green-600 hover:text-red-600 font-bold text-lg transition-colors"
+                          title="Remove coupon"
+                        >
+                          ✕
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                </div>
               </div>
 
               <div className="md:col-span-2 pt-10">
@@ -206,6 +339,7 @@ const BookingCheckout = () => {
             </form>
           </div>
 
+          {/* ===== UPDATED PRICE SUMMARY ===== */}
           <div className="lg:w-1/3">
             <div className="bg-stone-950 text-white p-10 rounded-sm sticky top-32 border border-white/5 shadow-2xl">
               <div className="w-12 h-[1px] bg-[#b1a494] mb-6"></div>
@@ -234,8 +368,29 @@ const BookingCheckout = () => {
               <div className="space-y-3 mb-10 border-t border-white/5 pt-8">
                 <div className="flex justify-between text-[9px] text-stone-500 tracking-widest uppercase">
                   <span>Base Fare</span>
-                  <span>${totalPrice}</span>
+                  <span>${basePrice.toFixed(2)}</span>
                 </div>
+
+                {/* Discount Row - Only show if coupon applied */}
+                {appliedCoupon && discountAmount > 0 && (
+                  <div className="flex justify-between text-[9px] text-green-400 tracking-widest uppercase font-bold">
+                    <span>Coupon Discount ({AVAILABLE_COUPONS[appliedCoupon].discount}%)</span>
+                    <span>-${discountAmount.toFixed(2)}</span>
+                  </div>
+                )}
+
+                {/* Coupon Applied Badge */}
+                {appliedCoupon && AVAILABLE_COUPONS[appliedCoupon].discountType === "breakfast" && (
+                  <div className="flex justify-between text-[9px] text-yellow-300 tracking-widest uppercase font-bold">
+                    <span>✓ Free Breakfast Applied</span>
+                  </div>
+                )}
+
+                <div className="flex justify-between text-[9px] text-stone-500 tracking-widest uppercase">
+                  <span>Subtotal</span>
+                  <span>${discountedPrice.toFixed(2)}</span>
+                </div>
+
                 <div className="flex justify-between text-[9px] text-stone-500 tracking-widest uppercase">
                   <span>Taxes & Fees</span>
                   <span>
@@ -252,6 +407,15 @@ const BookingCheckout = () => {
                   ${finalTotal}
                 </span>
               </div>
+
+              {/* Savings Display */}
+              {discountAmount > 0 && (
+                <div className="mt-6 pt-6 border-t border-white/5 text-center">
+                  <p className="text-[9px] text-green-400 uppercase tracking-widest font-bold">
+                    You Save: ${discountAmount.toFixed(2)}
+                  </p>
+                </div>
+              )}
             </div>
           </div>
         </div>
@@ -261,8 +425,3 @@ const BookingCheckout = () => {
 };
 
 export default BookingCheckout;
-
-
-
-
-
