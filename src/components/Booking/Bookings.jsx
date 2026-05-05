@@ -123,7 +123,7 @@ const Bookings = () => {
                               {item.hotel?.name}
                             </span>
                             <span className="text-[9px] text-[#b1a494] font-black uppercase tracking-widest">
-                              {item.quantity} Suite{item.quantity > 1 ? 's' : ''}
+                              {item.quantity} Suite {item.quantity > 1 ? 's' : ''}
                             </span>
                           </div>
                         ))}
